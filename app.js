@@ -18,6 +18,9 @@ var leaderRouter = require('./routes/leaderRouter');
 const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 
+var passport = require('passport');
+var authenticate = require('./authenticate');
+
 const Dishes = require('./models/dishes');
 
 // Connection URL
@@ -37,6 +40,8 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -56,22 +61,16 @@ app.use('/users', users);
 app.use(auth);
 
 function auth (req, res, next) {
-    console.log(req.session);
+  console.log(req.user);
 
-  if(!req.session.user) {
-      var err = new Error('You are not authenticated!');
-      err.status = 403;
-      return next(err);
+  if (!req.user) {
+    var err = new Error('You are not authenticated!');
+    res.setHeader('WWW-Authenticate', 'Basic');                          
+    err.status = 401;
+    next(err);
   }
   else {
-    if (req.session.user === 'authenticated') {
-      next();
-    }
-    else {
-      var err = new Error('You are not authenticated!');
-      err.status = 403;
-      return next(err);
-    }
+        next();
   }
 }
 
