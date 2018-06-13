@@ -20,11 +20,11 @@ mongoose.Promise = require('bluebird');
 
 var passport = require('passport');
 var authenticate = require('./authenticate');
-
+var config = require('./config');
 const Dishes = require('./models/dishes');
 
 // Connection URL
-const url = 'mongodb://localhost:27017/conFusion';
+const url = config.mongoUrl;
 const connect = mongoose.connect(url, {
     useMongoClient: true,
     /* other options */
