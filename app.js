@@ -22,6 +22,7 @@ var passport = require('passport');
 var authenticate = require('./authenticate');
 var config = require('./config');
 const Dishes = require('./models/dishes');
+const uploadRouter = require('./routes/uploadRouter');
 
 // Connection URL
 const url = config.mongoUrl;
@@ -57,6 +58,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser('12345-67890-09876-54321'));
+app.use('/imageUpload',uploadRouter);
 
 app.use(session({
   name: 'session-id',
