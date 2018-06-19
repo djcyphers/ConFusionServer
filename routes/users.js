@@ -5,12 +5,16 @@ var User = require('../models/user');
 var passport = require('passport');
 var authenticate = require('../authenticate');
 
-
 router.use(bodyParser.json());
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+router.get('/', authenticate.verifyUser, authenticate.verifyAdmin, function(req, res, next) {
+  User.find({}, (err, users) => {
+      if(err){
+        res.json({err:err});
+      }
+      res.json(users);
+  });
 });
 
 router.post('/signup', (req, res, next) => {
